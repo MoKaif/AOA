@@ -1,0 +1,78 @@
+#include <stdio.h>
+#define INF 999
+#define MAX 10
+
+void dijkstra(int G[MAX][MAX], int v, int startnode)
+{
+    int cost[MAX][MAX], visited[MAX], distance[MAX], pred[MAX];
+    int count, mindistance, nextnode;
+    for (int i = 0; i < v; i++)
+        for (int j = 0; j < v; j++)
+        {
+            if (G[i][j] == 0)
+                cost[i][j] = INF;
+            else
+                cost[i][j] = G[i][j];
+        }
+    for (int i = 0; i < v; i++)
+    {
+        distance[i] = cost[startnode][i];
+        visited[i] = 0;
+        pred[i] = startnode;
+    }
+    distance[startnode] = 0;
+    visited[startnode] = 1;
+    count = 1;
+    while (count < v - 1)
+    {
+        mindistance = INF;
+        for (int i = 0; i < v; i++)
+            if (distance[i] < mindistance && !visited[i])
+            {
+                mindistance = distance[i];
+                nextnode = i;
+            }
+        visited[nextnode] = 1;
+        for (int i = 0; i < v; i++)
+            if (!visited[i])
+                if (mindistance + cost[nextnode][i] < distance[i])
+                {
+                    distance[i] = mindistance + cost[nextnode][i];
+                    pred[i] = nextnode;
+                }
+        count++;
+    }
+
+    for (int i = 0; i < v; i++)
+    {
+        if (i != startnode)
+        {
+            printf("\nDistance of node %d = %d ", i, distance[i]);
+            printf("\nPath= %d", i);
+            int j = i;
+            do
+            {
+                j = pred[j];
+                printf("<-%d", j);
+            } while (j != startnode);
+        }
+    }
+}
+
+int main(int argc, char const *argv[])
+{
+    int v, G[MAX][MAX], startnode;
+    printf("\nEnter the total number of vertices: ");
+    scanf("%d", &v);
+
+    printf("Enter the adjacent matrix: \n");
+    for (int i = 0; i < v; i++)
+        for (int j = 0; j < v; j++)
+            scanf("%d", &G[i][j]);
+
+    printf("\nEnter the starting node: ");
+    scanf("%d", &startnode);
+
+    dijkstra(G, v, startnode);
+    return 0;
+}
